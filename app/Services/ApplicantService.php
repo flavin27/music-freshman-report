@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 use App\Models\Applicant;
@@ -7,7 +7,7 @@ class ApplicantService
 {
     public static function insertFirstPhase(array $data, int $semester): void
     {
-        $instrumento = self::extractInstrument($data[0]);
+        $instrument = self::extractInstrument($data[0]);
         $name = trim($data[4]);
         $degreeType = $data[1];
         $shift = $data[2];
@@ -16,7 +16,7 @@ class ApplicantService
 
         Applicant::create([
             'name' => $name,
-            'instrumentos' => $instrumento,
+            'instrument' => $instrument,
             'semester' => $semester,
             'degree_type' => $degreeType,
             'shift' => $shift,
@@ -28,7 +28,7 @@ class ApplicantService
 
     public static function insertSecondPhase(array $data, int $semester): void
     {
-        $instrumento = self::extractInstrument($data[0]);
+        $instrument = self::extractInstrument($data[0]);
         $name = trim($data[4]);
         $degreeType = $data[1];
         $shift = $data[2];
@@ -36,9 +36,9 @@ class ApplicantService
         $approvedSecondPhase = $data[5] === 'Apto' ? true : false;
 
         Applicant::updateOrCreate(
-            ['name' => $name, 
+            ['name' => $name,
             'semester' => $semester,
-            'instrumentos' => $instrumento,
+            'instrument' => $instrument,
             'degree_type' => $degreeType,
             'shift' => $shift,
             'campus' => $campus],

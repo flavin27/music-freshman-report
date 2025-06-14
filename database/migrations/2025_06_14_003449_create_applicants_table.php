@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\Instrumentos;
+use App\Enums\Instruments;
 use App\Enums\DegreeType;
 use App\Enums\Shift;
 
@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('applicants', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('instrumentos', array_column(Instrumentos::cases(), 'value'));
+            $table->enum('instrument', array_column(Instruments::cases(), 'value'));
             $table->string('semester');
             $table->string('campus');
             $table->enum("degree_type", array_column(DegreeType::cases(), 'value'));

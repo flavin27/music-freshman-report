@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum Instrumentos: string
+enum Instruments: string
 {
     case Bandolim = 'Bandolim';
     case Canto = 'Canto';

@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Applicant;
+use App\Services\ApplicantService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,23 +38,23 @@ class ImportEntranceExamResult extends Command
         }
 
         $this->info("Processing URL...");
-		
+
 		$file = file_get_contents($url);
-		
+
 		$fileName = "public/pdfs/result-{$semester}-{$phase}.pdf";
-		
+
 		Storage::put($fileName, $file);
-		
+
 		$path = Storage::path($fileName);
-		
+
 		$this->info("Downloaded completed!");
-		
+
 		$this->info("Extracting data...");
-		
+
 		$output = shell_exec("pdftotext -layout {$path} -");
-		
+
 		$notas = explode("\n", $output);
-		
+
 		$dados = [];
 
 		foreach ($notas as $nota ){
@@ -62,9 +64,18 @@ class ImportEntranceExamResult extends Command
 				$dados[] = $aluno;
 			}
 		}
-		
-		print_r($dados);
-		
+
+        foreach ($dados as $dado) {
+            if ($phase === '1') {
+                ApplicantService::insertFirstPhase($dado, $semester);
+            }
+            if ($phase === '2') {
+                ApplicantService::insertSecondPhase($dado, $semester);
+            }
+        }
+
+        //print_r($dados);
+
         $this->info('Import completed successfully.');
         return 0;
     }

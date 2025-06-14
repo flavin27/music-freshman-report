@@ -48,10 +48,12 @@ class ApplicantService
         );
     }
 
-    public function extractInstrument(string $fullCourseName): string
+    public static function extractInstrument(string $fullCourseName): string
     {
-        preg_match('/\/\s*(.*?)\s* -/', $fullCourseName, $matches);
-        return $matches[1] ?? '';
+        if (preg_match('/\/\s*(.*?)\s* -/', $fullCourseName, $matches)) {
+            return $matches[1];
+        }
+        return trim($fullCourseName);
     }
 }
 

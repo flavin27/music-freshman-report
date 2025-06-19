@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Applicant;
-use App\Services\ApplicantService;
+use App\Parsers\Factories\ApplicantParserFactory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,12 +16,20 @@ class ImportEntranceExamResult extends Command
      */
     protected $signature = 'app:import {json}';
 
+    private ApplicantParserFactory $parserFactory;
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Command description';
+
+    public function __construct(ApplicantParserFactory $parserFactory)
+    {
+        parent::__construct();
+        $this->parserFactory = $parserFactory;
+    }
 
     /**
      * Execute the console command.
@@ -30,7 +38,7 @@ class ImportEntranceExamResult extends Command
     {
         $json = $this->argument('json');
 
-        $data = json_decode($json, true);
+        $data = json_decode(file_get_contents($json), true);
 
         foreach($data as $item) {
             $url = $item['url'];
@@ -43,7 +51,7 @@ class ImportEntranceExamResult extends Command
 
             $file = file_get_contents($url);
 
-            $fileName = $this->getFileNameFromUrl($url);
+            $fileName = "public/pdfs/" . $this->getFileNameFromUrl($url);
 
             Storage::put($fileName, $file);
 
@@ -59,9 +67,13 @@ class ImportEntranceExamResult extends Command
 
             $ano = $this->extractYearFromUrl($url);
 
+            $parser = $this->parserFactory->make($ano);
+
+            $dados = $parser->parse($notas);
+
 
         }
-        //print_r($dados);
+
 
         $this->info('Import completed successfully.');
         return 0;
@@ -93,6 +105,21 @@ class ImportEntranceExamResult extends Command
     {
         preg_match('/(20\d{2})/', $url, $matches);
         return (int) ($matches[1] ?? throw new \Exception("Ano não encontrado na URL: $url"));
+    }
+
+    private function downloadPdf(string $url, string $fileName): string
+    {
+        $this->info("Baixando PDF de: {$url}");
+
+        $file = @file_get_contents($url);
+        if (!$file) {
+            throw new \Exception("Falha ao baixar o arquivo: {$url}");
+        }
+
+        Storage::put($fileName, $file);
+        $this->info("Arquivo salvo em: {$fileName}");
+
+        return Storage::path($fileName);
     }
 
 }

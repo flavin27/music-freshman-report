@@ -9,7 +9,12 @@ class ApplicantParser2025 extends BaseParser
 {
 
 
-    private int $semester = 2025;
+    protected int $semester;
+
+    public function __construct(int $semester)
+    {
+        $this->semester = $semester;
+    }
 
     /**
      * Parses the raw data and returns an array of ApplicantDTO objects.

@@ -19,6 +19,7 @@ class ApplicantParserFactory
             throw new InvalidArgumentException("Nenhum parser registrado para o ano {$year}.");
         }
 
-        return app($this->parsers[$year]);
+        $parserClass = $this->parsers[$year];
+        return new $parserClass($year);
     }
 }

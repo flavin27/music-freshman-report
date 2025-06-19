@@ -20,8 +20,8 @@
                     onclick="window.location='{{ route('applicants.details', ['instrument' => $item->instrument]) }}'"
                 >
                     <td class="py-2 px-4 border-b">{{ $item->instrument }}</td>
-                    <td class="py-2 px-4 border-b text-center">{{ $item->total }}</td>
-                    <td class="py-2 px-4 border-b text-center">{{ $item->aprovados }}</td>
+                    <td class="py-2 px-4 border-b text-center" data-sort="{{$item->total/100}}">{{ $item->total }}</td>
+                    <td class="py-2 px-4 border-b text-center" data-sort="{{$item->aprovados/100}}">{{ $item->aprovados }}</td>
                     <td class="py-2 px-4 border-b text-center"  data-sort="{{ $item->aprovados / $item->total }}">
                         {{ number_format($item->porcentagem, 2) }}%
                     </td>

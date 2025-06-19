@@ -8,6 +8,7 @@ use App\DTO\ApplicantDTO;
 class ApplicantParser2025 extends BaseParser
 {
 
+
     private int $semester = 2025;
 
     /**
@@ -32,7 +33,7 @@ class ApplicantParser2025 extends BaseParser
                     degreeType: $rawApplicant[1],
                     shift: $rawApplicant[2],
                     campus: $rawApplicant[3],
-                    is_approved: $this->isApto($rawApplicant[5])
+                    is_approved: $this->isApto($rawApplicant[5] ?? '')
                 );
                 $applicantList[] = $applicant;
             }

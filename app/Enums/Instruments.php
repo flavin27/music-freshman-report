@@ -17,7 +17,7 @@ enum Instruments: string
     case Licentiaura = 'Licenciatura em Música';
     case Oboe = 'Oboé';
     case Orgão = 'Órgão';
-    case Percussão = 'Instrumento de Percussão';
+    case Percussao = 'Instrumento de Percussão';
     case Piano = 'Piano';
     Case RegenciaCoral = 'Regência Coral';
     case RegenciaBando = 'Regência de Banda';

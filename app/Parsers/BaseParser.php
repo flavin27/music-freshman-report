@@ -3,6 +3,7 @@
 namespace App\Parsers;
 
 use App\DTO\ApplicantDTO;
+use App\Enums\Instruments;
 use App\Interfaces\ApplicantParserInterface;
 
 abstract class BaseParser implements ApplicantParserInterface
@@ -18,7 +19,11 @@ abstract class BaseParser implements ApplicantParserInterface
     protected function extractInstrument(string $fullCourseName): string
     {
         if (preg_match('/\/\s*(.*?)\s* -/', $fullCourseName, $matches)) {
-            return trim($matches[1]);
+            $instumento =  trim($matches[1]);
+            if ($instumento === 'Instrum. de Percussão') {
+                return Instruments::Percussao->value;
+            }
+            return $instumento;
         }
 
         return trim(preg_replace('/^(Música\s*\/\s*)?/', '', $fullCourseName));

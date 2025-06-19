@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Applicant;
 use App\Parsers\Factories\ApplicantParserFactory;
+use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,6 +19,8 @@ class ImportEntranceExamResult extends Command
 
     private ApplicantParserFactory $parserFactory;
 
+    private ApplicantRepositoryInterface $applicantRepository;
+
     /**
      * The console command description.
      *
@@ -25,10 +28,11 @@ class ImportEntranceExamResult extends Command
      */
     protected $description = 'Command description';
 
-    public function __construct(ApplicantParserFactory $parserFactory)
+    public function __construct(ApplicantParserFactory $parserFactory, ApplicantRepositoryInterface $applicantRepository)
     {
         parent::__construct();
         $this->parserFactory = $parserFactory;
+        $this->applicantRepository = $applicantRepository;
     }
 
     /**
@@ -61,13 +65,19 @@ class ImportEntranceExamResult extends Command
 
             $rawData = explode("\n", $output);
 
-            $ano = $this->extractYearFromUrl($url);
+            $year = $this->extractYearFromUrl($url);
 
-            $parser = $this->parserFactory->make($ano);
+            $parser = $this->parserFactory->make($year);
 
             $data = $parser->parse($rawData);
 
-            print_r($data);
+            $this->info("Saving data to the database...\n\n");
+
+            foreach ($data as $applicantData) {
+                $this->applicantRepository->store($applicantData);
+                //$this->info("Applicant {$applicant->name} saved successfully.");
+            }
+
 
 
         }

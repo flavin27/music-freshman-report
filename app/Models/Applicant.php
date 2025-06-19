@@ -16,13 +16,12 @@ class Applicant extends Model
         'degree_type',
         'campus',
         'shift',
-        'approved_first_phase',
-        'approved_second_phase',
+        'is_approved'
     ];
 
     protected $casts = [
-        'approved_first_phase' => 'boolean',
-        'approved_second_phase' => 'boolean',
+        'is_approved' => 'boolean',
+        'semester' => 'integer',
         'instrument' => Instruments::class,
         'degree_type' => DegreeType::class,
         'shift' => Shift::class,

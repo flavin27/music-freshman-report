@@ -19,11 +19,10 @@ return new class extends Migration
             $table->string('name');
             $table->enum('instrument', array_column(Instruments::cases(), 'value'));
             $table->string('semester');
-            $table->string('campus');
+            $table->string('campus')->default('Escola de Música');
             $table->enum("degree_type", array_column(DegreeType::cases(), 'value'));
-            $table->enum("shift", array_column(Shift::cases(), 'value'));
-            $table->boolean('approved_first_phase')->default(false);
-            $table->boolean('approved_second_phase')->default(false);
+            $table->enum("shift", array_column(Shift::cases(), 'value'))->default(Shift::Integral->value);
+            $table->boolean('is_approved')->default(false);
             $table->timestamps();
         });
     }

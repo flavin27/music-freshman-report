@@ -14,7 +14,7 @@ class ImportEntranceExamResult extends Command
      *
      * @var string
      */
-    protected $signature = 'app:import {semester} {phase} {url}';
+    protected $signature = 'app:import {json}';
 
     /**
      * The console command description.
@@ -26,57 +26,73 @@ class ImportEntranceExamResult extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        $url = $this->argument('url');
-		$semester = $this->argument('semester');
-		$phase = $this->argument('phase');
+        $json = $this->argument('json');
 
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            $this->error('Invalid URL provided.');
-            return 1;
-        }
+        $data = json_decode($json, true);
 
-        $this->info("Processing URL...");
+        foreach($data as $item) {
+            $url = $item['url'];
 
-		$file = file_get_contents($url);
-
-		$fileName = "public/pdfs/result-{$semester}-{$phase}.pdf";
-
-		Storage::put($fileName, $file);
-
-		$path = Storage::path($fileName);
-
-		$this->info("Downloaded completed!");
-
-		$this->info("Extracting data...");
-
-		$output = shell_exec("pdftotext -layout {$path} -");
-
-		$notas = explode("\n", $output);
-
-		$dados = [];
-
-		foreach ($notas as $nota ){
-			$aluno = preg_split('/\s{2,}/', $nota);
-
-			if (count($aluno) > 4 && !empty($aluno[0])) {
-				$dados[] = $aluno;
-			}
-		}
-
-        foreach ($dados as $dado) {
-            if ($phase === '1') {
-                ApplicantService::insertFirstPhase($dado, $semester);
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                $this->error('Invalid URL provided.');
+                return 1;
             }
-            if ($phase === '2') {
-                ApplicantService::insertSecondPhase($dado, $semester);
-            }
-        }
+            $this->info("Processing URL...");
 
+            $file = file_get_contents($url);
+
+            $fileName = $this->getFileNameFromUrl($url);
+
+            Storage::put($fileName, $file);
+
+            $path = Storage::path($fileName);
+
+            $this->info("Downloaded completed!");
+
+            $this->info("Extracting data...");
+
+            $output = shell_exec("pdftotext -layout {$path} -");
+
+            $notas = explode("\n", $output);
+
+            $ano = $this->extractYearFromUrl($url);
+
+
+        }
         //print_r($dados);
 
         $this->info('Import completed successfully.');
         return 0;
     }
+
+    private function getFileNameFromUrl(string $url): string
+    {
+        preg_match('/(20\d{2})/', $url, $match);
+        $year = $match[1] ?? 'unknown';
+
+        $lowerUrl = strtolower($url);
+
+        if (str_contains($lowerUrl, 'inscritos')) {
+            return "inscritos-{$year}.pdf";
+        }
+
+        if (str_contains($lowerUrl, '2aetapa')) {
+            return "result-{$year}-fase2.pdf";
+        }
+
+        if (str_contains($lowerUrl, 'resultado')) {
+            return "result-{$year}-fase1.pdf";
+        }
+
+        return "arquivo-{$year}.pdf";
+    }
+
+    private function extractYearFromUrl(string $url): int
+    {
+        preg_match('/(20\d{2})/', $url, $matches);
+        return (int) ($matches[1] ?? throw new \Exception("Ano não encontrado na URL: $url"));
+    }
+
 }

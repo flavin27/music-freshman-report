@@ -5,7 +5,7 @@ use App\Models\Applicant;
 
 class ApplicantService
 {
-    public static function insertFirstPhase(array $data, int $semester): void
+    public static function insertFirstPhase(array $data): void
     {
         $instrument = self::extractInstrument($data[0]);
         $name = trim($data[4]);
@@ -48,13 +48,6 @@ class ApplicantService
         );
     }
 
-    public static function extractInstrument(string $fullCourseName): string
-    {
-        if (preg_match('/\/\s*(.*?)\s* -/', $fullCourseName, $matches)) {
-            return $matches[1];
-        }
-        return trim($fullCourseName);
-    }
 }
 
 ?>

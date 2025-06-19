@@ -53,23 +53,21 @@ class ImportEntranceExamResult extends Command
 
             $fileName = "public/pdfs/" . $this->getFileNameFromUrl($url);
 
-            Storage::put($fileName, $file);
-
-            $path = Storage::path($fileName);
-
-            $this->info("Downloaded completed!");
+            $path = $this->downloadRawData($url, $fileName);
 
             $this->info("Extracting data...");
 
             $output = shell_exec("pdftotext -layout {$path} -");
 
-            $notas = explode("\n", $output);
+            $rawData = explode("\n", $output);
 
             $ano = $this->extractYearFromUrl($url);
 
             $parser = $this->parserFactory->make($ano);
 
-            $dados = $parser->parse($notas);
+            $data = $parser->parse($rawData);
+
+            print_r($data);
 
 
         }
@@ -107,17 +105,17 @@ class ImportEntranceExamResult extends Command
         return (int) ($matches[1] ?? throw new \Exception("Ano não encontrado na URL: $url"));
     }
 
-    private function downloadPdf(string $url, string $fileName): string
+    private function downloadRawData(string $url, string $fileName): string
     {
-        $this->info("Baixando PDF de: {$url}");
+        $this->info("Downloading data from: {$url}");
 
         $file = @file_get_contents($url);
         if (!$file) {
-            throw new \Exception("Falha ao baixar o arquivo: {$url}");
+            throw new \Exception("Failed to download data from: {$url}");
         }
 
         Storage::put($fileName, $file);
-        $this->info("Arquivo salvo em: {$fileName}");
+        $this->info("File: {$fileName} saved  successfully");
 
         return Storage::path($fileName);
     }

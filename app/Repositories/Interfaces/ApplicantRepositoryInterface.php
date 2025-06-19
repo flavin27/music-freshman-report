@@ -8,4 +8,5 @@ use App\Models\Applicant;
 interface ApplicantRepositoryInterface
 {
     public function store(ApplicantDTO $applicant): Applicant;
+
 }

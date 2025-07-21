@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\Instruments;
 use App\Enums\DegreeType;
@@ -9,6 +10,8 @@ use App\Enums\Shift;
 
 class Applicant extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'instrument',

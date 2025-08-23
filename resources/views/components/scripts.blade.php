@@ -4,13 +4,21 @@
     document.addEventListener('DOMContentLoaded', function () {
         new Tablesort(document.getElementById('sortableTable'));
     });
-    document.getElementById("searchInput").addEventListener("keyup", function() {
-        let filter = this.value.toLowerCase();
-        let rows = document.querySelectorAll("#tableBody tr");
+    function normalizeText(text) {
+        return text
+            .normalize("NFD") 
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+        const filter = normalizeText(this.value);
+        const rows = document.querySelectorAll("#tableBody tr");
 
         rows.forEach(row => {
-            let text = row.querySelector("td").textContent.toLowerCase();
+            const text = normalizeText(row.textContent);
             row.style.display = text.includes(filter) ? "" : "none";
         });
     });
+
 </script>

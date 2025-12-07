@@ -23,6 +23,7 @@ class ApplicantParser2021 extends BaseParser
 
         foreach ($raw as $item ){
             $rawApplicant = preg_split('/\s{2,}/', $item);
+            // Only valid applicants have more than 3 fields and table header is ignored
             if (count($rawApplicant) > 3 && !empty($rawApplicant[0]) && $rawApplicant[0] != 'Opção') {
 
 

@@ -35,8 +35,8 @@ abstract class BaseCommand extends Command
         return match (true) {
             str_contains($lowerUrl, 'inscritos') => "inscritos-{$year}.pdf",
             str_contains($lowerUrl, '2aetapa') => "result-{$year}-fase2.pdf",
-            str_contains($lowerUrl, 'resultado') => "result-{$year}-fase1.pdf",
-            default => "arquivo-{$year}.pdf"
+            str_contains($lowerUrl, 'resultado') => "result-{$year}.pdf",
+            default => "resultado-{$year}.pdf"
         };
     }
 

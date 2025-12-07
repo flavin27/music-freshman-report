@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Parsers\ApplicantParser2021;
 use Illuminate\Support\ServiceProvider;
 use App\Parsers\Factories\ApplicantParserFactory;
 use App\Parsers\ApplicantParser2025;
@@ -17,6 +18,8 @@ class ParserServiceProvider extends ServiceProvider
                 2025 => ApplicantParser2025::class,
                 2024 => ApplicantParser2025::class,
                 2023 => ApplicantParser2025::class,
+                2022 => ApplicantParser2021::class,
+                2021 => ApplicantParser2021::class,
             ]);
         });
     }

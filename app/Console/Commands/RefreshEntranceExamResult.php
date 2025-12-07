@@ -11,7 +11,7 @@ class RefreshEntranceExamResult extends BaseCommand
      *
      * @var string
      */
-    protected $signature = 'app:refresh';
+    protected $signature = 'app:refresh {year?}';
 
     /**
      * The console command description.
@@ -26,6 +26,9 @@ class RefreshEntranceExamResult extends BaseCommand
      */
     public function handle(): int
     {
+
+        $yearArg = $this->argument('year');
+
         $files = Storage::files('public/pdfs');
 
         if (empty($files)) {
@@ -34,17 +37,35 @@ class RefreshEntranceExamResult extends BaseCommand
         }
 
         foreach ($files as $file) {
-            $this->info("Processing file: $file");
-
-            $path = Storage::path($file);
             $year = $this->extractYearFromUrl($file);
-            $raw = $this->extractText($path);
+            if (!$yearArg) {
+                $this->info("Processing file: $file");
 
-            $parser = $this->parserFactory->make($year);
-            $dtos = $parser->parse($raw);
+                $path = Storage::path($file);
 
-            foreach ($dtos as $dto) {
-                $this->applicantRepository->store($dto);
+                $raw = $this->extractText($path);
+
+                $parser = $this->parserFactory->make($year);
+                $dtos = $parser->parse($raw);
+
+                foreach ($dtos as $dto) {
+                    $this->applicantRepository->store($dto);
+                }
+            } else {
+                if ($yearArg == $year) {
+                    $this->info("Processing file: $file");
+
+                    $path = Storage::path($file);
+
+                    $raw = $this->extractText($path);
+
+                    $parser = $this->parserFactory->make($year);
+                    $dtos = $parser->parse($raw);
+
+                    foreach ($dtos as $dto) {
+                        $this->applicantRepository->store($dto);
+                    }
+                }
             }
 
         }

@@ -22,6 +22,7 @@ class ImportEntranceExamResult extends BaseCommand
             $path = $this->downloadRawData($url, $fileName);
             $raw = $this->extractText($path);
 
+
             $year = $this->extractYearFromUrl($url);
             $parser = $this->parserFactory->make($year);
             $dtos = $parser->parse($raw);

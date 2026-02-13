@@ -19,7 +19,7 @@ Fetch data from music entrance exams results and generate a web app to display t
 
 ## Dataset
 
-Entrance exams from 2021-2025.
+Entrance exams from 2016-2026.
 
 ## How to run
 

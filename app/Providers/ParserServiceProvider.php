@@ -16,6 +16,7 @@ class ParserServiceProvider extends ServiceProvider
         // Matching each year with its respective parser class
         $this->app->singleton(ApplicantParserFactory::class, function () {
             return new ApplicantParserFactory([
+                2026 => ApplicantParser2025::class,
                 2025 => ApplicantParser2025::class,
                 2024 => ApplicantParser2025::class,
                 2023 => ApplicantParser2025::class,
